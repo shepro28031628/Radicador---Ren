@@ -1,0 +1,20 @@
+# Carpeta de subida de archivos (Seguridad)
+uploads/
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Archivos temporales de edición
+*.tmp
+*.bak
+*.swp
+
+# Logs y Errores
+error_log
+php_errors.log
+
+# Configuración local de IDEs
+.vscode/
+.idea/
