@@ -31,34 +31,28 @@ function initDateDisplay() {
 
 /**
  * Gestiona el cambio entre pestañas (Individual / Masiva)
- * @param {string} tabName - El nombre de la pestaña a activar
+ * Realiza una conmutación de la obligatoriedad (required) de los campos.
+ * 
+ * @param {string} tabName - Identificador de la pestaña ('individual' | 'masiva')
  */
 function switchTab(tabName) {
+    const isMasiva = tabName === 'masiva';
     const form = document.getElementById('mainRadicadorForm');
-    const inputs = form.querySelectorAll('input:not([type="file"]), select');
     
-    // Actualizar estados visuales de los botones
+    // UI: Actualización de botones y contenidos
     document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.remove('active', 'bg-white', 'text-indigo-600');
-        btn.classList.add('text-slate-500');
+        const isActive = btn.id === `tab-${tabName}`;
+        btn.classList.toggle('active', isActive);
+        btn.classList.toggle('bg-white', isActive);
+        btn.classList.toggle('text-indigo-600', isActive);
+        btn.classList.toggle('text-slate-500', !isActive);
     });
     
-    const activeBtn = document.getElementById(`tab-${tabName}`);
-    if (activeBtn) {
-        activeBtn.classList.add('active', 'bg-white', 'text-indigo-600');
-        activeBtn.classList.remove('text-slate-500');
-    }
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.toggle('hidden', c.id !== `content-${tabName}`));
 
-    // Cambiar visibilidad de contenidos
-    document.querySelectorAll('.tab-content').forEach(content => content.classList.add('hidden'));
-    const targetContent = document.getElementById(`content-${tabName}`);
-    if (targetContent) targetContent.classList.remove('hidden');
-
-    // Lógica de obligatoriedad dinámica
-    const isMasiva = tabName === 'masiva';
+    // Lógica: Manejo de campos obligatorios
     form.classList.toggle('hide-required', isMasiva);
-    
-    inputs.forEach(input => {
+    form.querySelectorAll('input:not([type="file"]), select').forEach(input => {
         if (isMasiva) {
             if (input.required) input.setAttribute('data-was-required', 'true');
             input.required = false;
@@ -69,37 +63,41 @@ function switchTab(tabName) {
 }
 
 /**
- * Configura los eventos para la carga de archivos (click y drag & drop)
+ * Configura los eventos para la carga de archivos interactiva
  */
 function initFileUploads() {
-    const docInputs = document.querySelectorAll('.doc-input, #excel_upload');
-    
-    docInputs.forEach(input => {
-        const card = input.closest('.upload-card-interactive');
+    const ALLOWED_TYPES = ['.pdf', '.jpg', '.jpeg', '.png', '.xlsx', '.zip'];
+    const MAX_SIZE_MB = 10;
+
+    document.querySelectorAll('.doc-input, input[type="file"]').forEach(input => {
+        const card = input.closest('.upload-card-interactive') || input.parentElement;
         if (!card) return;
 
-        input.addEventListener('change', function() {
-            if (this.files.length > 0) {
-                card.classList.add('active');
-                const statusText = card.querySelector('h5') || card.querySelector('.status-text');
-                const fileName = this.files.length === 1 ? this.files[0].name : `${this.files.length} archivos`;
-                if (statusText) statusText.innerHTML = `<span class="text-indigo-600 font-bold">✔ ${fileName}</span>`;
-                
-                // Animación de feedback
-                card.style.transform = 'scale(1.02)';
-                setTimeout(() => card.style.transform = 'translateY(-2px)', 200);
-            }
-        });
+        input.addEventListener('change', () => {
+            if (input.files.length === 0) return;
 
-        // Eventos Drag & Drop
-        card.addEventListener('dragover', (e) => { e.preventDefault(); card.classList.add('border-indigo-400', 'bg-indigo-50/50'); });
-        card.addEventListener('dragleave', () => card.classList.remove('border-indigo-400', 'bg-indigo-50/50'));
-        card.addEventListener('drop', (e) => {
-            e.preventDefault();
-            card.classList.remove('border-indigo-400', 'bg-indigo-50/50');
-            if (e.dataTransfer.files.length > 0) {
-                input.files = e.dataTransfer.files;
-                input.dispatchEvent(new Event('change'));
+            const file = input.files[0];
+            const extension = '.' + file.name.split('.').pop().toLowerCase();
+            const sizeMB = file.size / (1024 * 1024);
+
+            if (!ALLOWED_TYPES.includes(extension)) {
+                alert(`Archivo no permitido. Use: ${ALLOWED_TYPES.join(', ')}`);
+                input.value = '';
+                return;
+            }
+
+            if (sizeMB > MAX_SIZE_MB) {
+                alert(`El archivo es demasiado pesado (${sizeMB.toFixed(2)}MB). Máximo: ${MAX_SIZE_MB}MB`);
+                input.value = '';
+                return;
+            }
+
+            const interactiveCard = input.closest('.upload-card-interactive');
+            if (interactiveCard) {
+                interactiveCard.classList.add('active');
+                const status = interactiveCard.querySelector('h5');
+                const name = input.files.length === 1 ? file.name : `${input.files.length} archivos`;
+                if (status) status.innerHTML = `<span class="text-indigo-600 font-bold">✔ ${name}</span>`;
             }
         });
     });
@@ -168,49 +166,51 @@ async function generateExcelTemplate() {
     const worksheet = workbook.addWorksheet('Plantilla Renapp');
 
     const headers = [
-        'Nombres', 'Apellidos', 'Tipo Documento', 'Cédula', 
-        'Celulares', 'Email', 'EPS', 'ARL', 'AFP', 'Tipo Afiliado', 'Tipo Solicitud'
+        'Tipo_de_documento', 'Número_de_documento', 'Nombres', 'Apellidos', 
+        'Fecha_de_Nacimiento', 'Sexo', 'Estado_Civil', 'Nivel_Escolar', 
+        'Departamento', 'Municipio', 'Tipo_Dirección', 'Dirección', 
+        'Teléfono', 'Celular', 'Correo_electrónico', 'IBC', 
+        'Tipo_de_Afiliado', 'EPS', 'Regional', 'AFP', 'ARL'
     ];
 
     const headerRow = worksheet.addRow(headers);
-    headerRow.font = { bold: true, color: { argb: 'FFFFFFFF' }, size: 12 };
-    headerRow.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF6366F1' } };
+    headerRow.font = { bold: true, color: { argb: 'FFFFFFFF' }, size: 11 };
+    headerRow.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF10B981' } }; // Color Esmeralda para Afiliados
     headerRow.alignment = { vertical: 'middle', horizontal: 'center' };
     headerRow.height = 25;
 
     // Configuración de listas desplegables vía hoja oculta
     const configSheet = workbook.addWorksheet('Config', { state: 'hidden' });
     const options = {
-        doc: ['CC', 'CE', 'TI'],
-        afiliado: ['Cotizante', 'Beneficiario'],
-        solicitud: [
-            'Valoración medica telemedicina', 'Valoración medica presencial',
-            'Concepto de rehabilitación', 'Recomendaciones laborales',
-            'Calificación de origen', 'Calificación de PCLO',
-            'Auditoria de seguimiento PRI', 
-            'Solicitudes de autorizacion de incapacidades y licencias - Liquidacion',
-            'Auditoria De Incapacidades Diferentes A Mayores De 540 Dias',
-            'Auditoria De Incapacidades', 'Auditoria De Incapacidades - Lm/Lp'
-        ]
+        doc: ['CC', 'CE', 'TI', 'RC', 'PT'],
+        sexo: ['Masculino', 'Femenino', 'Otro'],
+        estado: ['Soltero/a', 'Casado/a', 'Divorciado/a', 'Viudo/a', 'Unión Libre'],
+        afiliado: ['Cotizante', 'Beneficiario']
     };
 
     options.doc.forEach((opt, i) => configSheet.getCell(`A${i + 1}`).value = opt);
-    options.afiliado.forEach((opt, i) => configSheet.getCell(`B${i + 1}`).value = opt);
-    options.solicitud.forEach((opt, i) => configSheet.getCell(`C${i + 1}`).value = opt);
+    options.sexo.forEach((opt, i) => configSheet.getCell(`B${i + 1}`).value = opt);
+    options.estado.forEach((opt, i) => configSheet.getCell(`C${i + 1}`).value = opt);
+    options.afiliado.forEach((opt, i) => configSheet.getCell(`D${i + 1}`).value = opt);
 
-    // Aplicar validación a las primeras 100 filas
-    for (let i = 2; i <= 100; i++) {
-        worksheet.getCell(`C${i}`).dataValidation = { type: 'list', allowBlank: true, formulae: [`Config!$A$1:$A$${options.doc.length}`] };
-        worksheet.getCell(`J${i}`).dataValidation = { type: 'list', allowBlank: true, formulae: [`Config!$B$1:$B$${options.afiliado.length}`] };
-        worksheet.getCell(`K${i}`).dataValidation = { type: 'list', allowBlank: true, formulae: [`Config!$C$1:$C$${options.solicitud.length}`] };
+    // Aplicar validación a las primeras 500 filas para guiar al usuario
+    for (let i = 2; i <= 500; i++) {
+        worksheet.getCell(`A${i}`).dataValidation = { type: 'list', allowBlank: true, formulae: [`Config!$A$1:$A$${options.doc.length}`] };
+        worksheet.getCell(`F${i}`).dataValidation = { type: 'list', allowBlank: true, formulae: [`Config!$B$1:$B$${options.sexo.length}`] };
+        worksheet.getCell(`G${i}`).dataValidation = { type: 'list', allowBlank: true, formulae: [`Config!$C$1:$C$${options.estado.length}`] };
+        worksheet.getCell(`Q${i}`).dataValidation = { type: 'list', allowBlank: true, formulae: [`Config!$D$1:$D$${options.afiliado.length}`] };
     }
 
+    // Auto-ajuste de ancho de columnas para legibilidad
     worksheet.columns.forEach(col => { col.width = 25; });
 
+    // Generación del archivo y descarga automática
     const buffer = await workbook.xlsx.writeBuffer();
     const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
     link.download = 'Plantilla_Radicacion_Masiva.xlsx';
     link.click();
+    
+    console.log('✅ Plantilla Excel generada exitosamente.');
 }
