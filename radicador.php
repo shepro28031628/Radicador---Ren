@@ -131,9 +131,15 @@ require_once 'includes/procesar.php';
                                     <option value="PT">PT</option>
                                 </select>
                             </div>
-                            <div>
+                            <div class="relative group">
                                 <label for="cedula" class="required text-[10px]">NUMERO IDENTIFICACION</label>
-                                <input type="text" id="cedula" name="cedula" class="input-premium w-full text-sm py-2" placeholder="Número" required>
+                                <div class="relative">
+                                    <input type="text" id="cedula" name="cedula" class="input-premium w-full text-sm py-2 pr-10" placeholder="Número" required>
+                                    <div id="searchIndicator" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 transition-all">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" id="searchIcon"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                                        <svg class="w-4 h-4 animate-spin hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" id="loadingIcon"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                                    </div>
+                                </div>
                             </div>
                             <div>
                                 <label for="nombres" class="required text-[10px]">NOMBRES</label>
@@ -250,88 +256,96 @@ require_once 'includes/procesar.php';
                         </div>
 
                         <div id="content-individual" class="tab-content">
-                            <div class="grid grid-cols-2 md:grid-cols-6 gap-2">
-                                <div class="upload-card-interactive !p-2" onclick="document.getElementById('doc_cedula').click()">
-                                    <div class="file-icon !w-7 !h-7 mb-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"></path></svg></div>
-                                    <h5 class="text-[9px] font-bold text-slate-700 uppercase">Cédula</h5>
-                                    <input type="file" id="doc_cedula" name="doc_cedula" class="hidden doc-input">
-                                </div>
+                            <div class="grid grid-cols-2 md:grid-cols-5 gap-2">
                                 <div class="upload-card-interactive !p-2" onclick="document.getElementById('doc_historia_clinica').click()">
                                     <div class="file-icon !w-7 !h-7 mb-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg></div>
-                                    <h5 class="text-[9px] font-bold text-slate-700 uppercase">Historia Clínica</h5>
+                                    <h5 class="text-[8px] font-bold text-slate-700 uppercase leading-tight">Historia Clínica</h5>
                                     <input type="file" id="doc_historia_clinica" name="doc_historia_clinica" class="hidden doc-input">
                                 </div>
-                                <div class="upload-card-interactive !p-2" onclick="document.getElementById('doc_incapacidades').click()">
+                                <div class="upload-card-interactive !p-2" onclick="document.getElementById('doc_furel').click()">
+                                    <div class="file-icon !w-7 !h-7 mb-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
+                                    <h5 class="text-[8px] font-bold text-slate-700 uppercase leading-tight">FUREL</h5>
+                                    <input type="file" id="doc_furel" name="doc_furel" class="hidden doc-input">
+                                </div>
+                                <div class="upload-card-interactive !p-2" onclick="document.getElementById('doc_evaluaciones_medicas').click()">
+                                    <div class="file-icon !w-7 !h-7 mb-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg></div>
+                                    <h5 class="text-[8px] font-bold text-slate-700 uppercase leading-tight">Eval. Médicas</h5>
+                                    <input type="file" id="doc_evaluaciones_medicas" name="doc_evaluaciones_medicas" class="hidden doc-input">
+                                </div>
+                                <div class="upload-card-interactive !p-2" onclick="document.getElementById('doc_certificado_cargos').click()">
+                                    <div class="file-icon !w-7 !h-7 mb-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg></div>
+                                    <h5 class="text-[8px] font-bold text-slate-700 uppercase leading-tight">Cert. Cargos</h5>
+                                    <input type="file" id="doc_certificado_cargos" name="doc_certificado_cargos" class="hidden doc-input">
+                                </div>
+                                <div class="upload-card-interactive !p-2" onclick="document.getElementById('doc_analisis_puesto').click()">
                                     <div class="file-icon !w-7 !h-7 mb-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg></div>
-                                    <h5 class="text-[9px] font-bold text-slate-700 uppercase">Incapacidades</h5>
-                                    <input type="file" id="doc_incapacidades" name="doc_incapacidades" class="hidden doc-input">
+                                    <h5 class="text-[8px] font-bold text-slate-700 uppercase leading-tight">Análisis Puesto</h5>
+                                    <input type="file" id="doc_analisis_puesto" name="doc_analisis_puesto" class="hidden doc-input">
                                 </div>
-                                <div class="upload-card-interactive !p-2" onclick="document.getElementById('doc_adres_eps').click()">
-                                    <div class="file-icon !w-7 !h-7 mb-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg></div>
-                                    <h5 class="text-[9px] font-bold text-slate-700 uppercase">ADRES o EPS</h5>
-                                    <input type="file" id="doc_adres_eps" name="doc_adres_eps" class="hidden doc-input">
+                                <div class="upload-card-interactive !p-2" onclick="document.getElementById('doc_matriz_riesgo').click()">
+                                    <div class="file-icon !w-7 !h-7 mb-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg></div>
+                                    <h5 class="text-[8px] font-bold text-slate-700 uppercase leading-tight">Matriz Riesgo</h5>
+                                    <input type="file" id="doc_matriz_riesgo" name="doc_matriz_riesgo" class="hidden doc-input">
                                 </div>
-                                <div class="upload-card-interactive !p-2" onclick="document.getElementById('doc_examenes').click()">
+                                <div class="upload-card-interactive !p-2" onclick="document.getElementById('doc_paraclinicos').click()">
                                     <div class="file-icon !w-7 !h-7 mb-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg></div>
-                                    <h5 class="text-[9px] font-bold text-slate-700 uppercase">Exámenes</h5>
-                                    <input type="file" id="doc_examenes" name="doc_examenes" class="hidden doc-input">
+                                    <h5 class="text-[8px] font-bold text-slate-700 uppercase leading-tight">Paraclínicos</h5>
+                                    <input type="file" id="doc_paraclinicos" name="doc_paraclinicos" class="hidden doc-input">
                                 </div>
-                                <div class="upload-card-interactive !p-2" onclick="document.getElementById('doc_anexos').click()">
+                                <div class="upload-card-interactive !p-2" onclick="document.getElementById('doc_autorizacion_hc').click()">
                                     <div class="file-icon !w-7 !h-7 mb-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.414a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg></div>
-                                    <h5 class="text-[9px] font-bold text-slate-700 uppercase">Anexos</h5>
-                                    <input type="file" id="doc_anexos" name="doc_anexos[]" class="hidden doc-input" multiple>
+                                    <h5 class="text-[8px] font-bold text-slate-700 uppercase leading-tight">Aut. Entrega HC</h5>
+                                    <input type="file" id="doc_autorizacion_hc" name="doc_autorizacion_hc" class="hidden doc-input">
+                                </div>
+                                <div class="upload-card-interactive !p-2" onclick="document.getElementById('doc_planilla_pila').click()">
+                                    <div class="file-icon !w-7 !h-7 mb-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg></div>
+                                    <h5 class="text-[8px] font-bold text-slate-700 uppercase leading-tight">Pagos PILA</h5>
+                                    <input type="file" id="doc_planilla_pila" name="doc_planilla_pila" class="hidden doc-input">
+                                </div>
+                                <div class="upload-card-interactive !p-2" onclick="document.getElementById('doc_cedula').click()">
+                                    <div class="file-icon !w-7 !h-7 mb-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"></path></svg></div>
+                                    <h5 class="text-[8px] font-bold text-slate-700 uppercase leading-tight">Fotocopia Cédula</h5>
+                                    <input type="file" id="doc_cedula" name="doc_cedula" class="hidden doc-input">
                                 </div>
                             </div>
                         </div>
 
-                        <div id="content-masiva" class="tab-content hidden space-y-4">
-                            <!-- 1. Cargar Afiliados -->
-                            <div class="bg-white border-l-4 border-emerald-500 rounded-xl shadow-sm p-4">
-                                <h4 class="text-sm font-bold text-slate-800 mb-1">Cargar Afiliados</h4>
-                                <p class="text-[9px] text-slate-500 mb-2 uppercase font-bold tracking-tight">Excel [21 Campos Obligatorios]</p>
-                                <div class="flex flex-col md:flex-row gap-3 items-center">
-                                    <input type="file" id="masiva_afiliados" name="masiva_afiliados" class="block w-full text-[10px] text-slate-500 border border-slate-200 rounded-lg cursor-pointer bg-slate-50 focus:outline-none py-1.5 px-3">
-                                    <div class="flex gap-2 w-full md:w-auto">
-                                        <button type="button" class="bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-bold px-4 py-2 rounded-lg transition-all flex items-center gap-2">
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
-                                            CARGAR
-                                        </button>
-                                        <button type="button" onclick="generateExcelTemplate()" class="bg-white border border-emerald-200 text-emerald-600 text-[10px] font-bold px-4 py-2 rounded-lg hover:bg-emerald-50 transition-all flex items-center gap-2">
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                                            PLANTILLA
-                                        </button>
+                        <div id="content-masiva" class="tab-content hidden space-y-3">
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                <!-- Paso 1: Carga Masiva Afiliados -->
+                                <div class="bg-white border border-slate-200 rounded-xl shadow-sm p-3 relative overflow-hidden group">
+                                    <div class="absolute top-0 right-0 bg-emerald-500 text-white text-[10px] font-black px-2 py-0.5 rounded-bl-lg">PASO 1</div>
+                                    <h4 class="text-[11px] font-bold text-slate-800 mb-1 uppercase tracking-tight">Carga Masiva Afiliados</h4>
+                                    <p class="text-[9px] text-slate-500 mb-2 leading-tight">Excel con 18 campos obligatorios para creación o actualización.</p>
+                                    <input type="file" id="masiva_afiliados" name="masiva_afiliados" class="block w-full text-[9px] text-slate-500 border border-slate-100 rounded-lg bg-slate-50 mb-2 py-1 px-2">
+                                    <div class="flex gap-1.5">
+                                        <button type="button" class="flex-1 bg-emerald-600 text-white text-[9px] font-bold py-1.5 rounded-lg hover:bg-emerald-700 transition-all">CARGAR</button>
+                                        <button type="button" onclick="generateExcelTemplate()" class="flex-1 bg-white border border-emerald-200 text-emerald-600 text-[9px] font-bold py-1.5 rounded-lg hover:bg-emerald-50 transition-all">PLANTILLA</button>
                                     </div>
                                 </div>
-                            </div>
 
-                            <!-- 2. Cargar Servicios -->
-                            <div class="bg-white border-l-4 border-amber-500 rounded-xl shadow-sm p-4">
-                                <h4 class="text-sm font-bold text-slate-800 mb-1">Cargar Servicios</h4>
-                                <p class="text-[9px] text-slate-500 mb-2 uppercase font-bold tracking-tight">Excel [tipo_documento - numero - servicio - usuario]</p>
-                                <div class="flex flex-col md:flex-row gap-3 items-center">
-                                    <input type="file" id="masiva_servicios" name="masiva_servicios" class="block w-full text-[10px] text-slate-500 border border-slate-200 rounded-lg cursor-pointer bg-slate-50 focus:outline-none py-1.5 px-3">
-                                    <button type="button" class="bg-amber-500 hover:bg-amber-600 text-white text-[10px] font-bold px-4 py-2 rounded-lg transition-all w-full md:w-auto">CARGAR</button>
+                                <!-- Paso 2: Cargar Servicios -->
+                                <div class="bg-white border border-slate-200 rounded-xl shadow-sm p-3 relative overflow-hidden group">
+                                    <div class="absolute top-0 right-0 bg-amber-500 text-white text-[10px] font-black px-2 py-0.5 rounded-bl-lg">PASO 2</div>
+                                    <h4 class="text-[11px] font-bold text-slate-800 mb-1 uppercase tracking-tight">Cargar Servicios</h4>
+                                    <p class="text-[9px] text-slate-500 mb-2 leading-tight">Excel [Tipo_Doc - Numero - Servicios - Usuarios]</p>
+                                    <input type="file" id="masiva_servicios" name="masiva_servicios" class="block w-full text-[9px] text-slate-500 border border-slate-100 rounded-lg bg-slate-50 mb-2 py-1 px-2">
+                                    <div class="flex gap-1.5">
+                                        <button type="button" class="flex-1 bg-amber-500 text-white text-[9px] font-bold py-1.5 rounded-lg hover:bg-amber-600 transition-all">CARGAR</button>
+                                        <button type="button" onclick="generateServicesTemplate()" class="flex-1 bg-white border border-amber-200 text-amber-600 text-[9px] font-bold py-1.5 rounded-lg hover:bg-amber-50 transition-all">PLANTILLA</button>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <!-- 3. Cargar Documentos -->
-                            <div class="bg-white border-l-4 border-indigo-600 rounded-xl shadow-sm p-4">
-                                <h4 class="text-sm font-bold text-slate-800 mb-1">Cargar Documentos (Opcion 1)</h4>
-                                <p class="text-[9px] text-slate-500 mb-2 leading-tight">Cargue un archivo <b>REGISTRO.xlsx</b> y un comprimido <b>ZIP</b> con los documentos.</p>
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div class="flex items-center gap-2">
-                                        <label for="masiva_zip" class="flex-grow border-2 border-dashed border-indigo-100 hover:border-indigo-300 text-indigo-500 py-2 px-3 rounded-lg cursor-pointer text-center text-[10px] font-bold transition-all">
-                                            ZIP DE DOCUMENTOS
-                                        </label>
-                                        <input type="file" id="masiva_zip" name="masiva_zip" class="hidden" accept=".zip">
+                                <!-- Paso 3: Registro y ZIP -->
+                                <div class="bg-white border border-slate-200 rounded-xl shadow-sm p-3 relative overflow-hidden group">
+                                    <div class="absolute top-0 right-0 bg-indigo-600 text-white text-[10px] font-black px-2 py-0.5 rounded-bl-lg">PASO 3</div>
+                                    <h4 class="text-[11px] font-bold text-slate-800 mb-1 uppercase tracking-tight">Cargar Documentos</h4>
+                                    <p class="text-[9px] text-slate-500 mb-2 leading-tight">Excel <b>REGISTRO.xlsx</b> + Archivo <b>ZIP</b> con documentos.</p>
+                                    <div class="space-y-1.5 mb-2">
+                                        <input type="file" id="masiva_excel_registro" name="masiva_excel_registro" class="block w-full text-[9px] text-slate-500 border border-slate-100 rounded-lg bg-slate-50 py-0.5 px-2" placeholder="REGISTRO.xlsx">
+                                        <input type="file" id="masiva_zip" name="masiva_zip" class="block w-full text-[9px] text-slate-500 border border-slate-100 rounded-lg bg-slate-50 py-0.5 px-2" accept=".zip" placeholder="DOCS.zip">
                                     </div>
-                                    <div class="flex gap-2">
-                                        <button type="button" class="bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] font-bold px-4 py-2 rounded-lg transition-all flex-grow">PROCESAR DOCUMENTOS</button>
-                                        <button type="button" class="bg-white border border-indigo-200 text-indigo-600 text-[10px] font-bold px-4 py-2 rounded-lg hover:bg-indigo-50 transition-all flex items-center gap-2">
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
-                                            LISTA DOCS
-                                        </button>
-                                    </div>
+                                    <button type="button" class="w-full bg-indigo-600 text-white text-[9px] font-bold py-1.5 rounded-lg hover:bg-indigo-700 transition-all">PROCESAR LOTE COMPLETO</button>
                                 </div>
                             </div>
                         </div>
@@ -374,6 +388,20 @@ require_once 'includes/procesar.php';
             <img src="Logo-Ren.png" alt="Logo Ren" class="h-5 opacity-80">
         </div>
     </footer>
+
+    <!-- Modal de Alerta: Campos Obligatorios -->
+    <div id="mandatoryModal" class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/40 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white/90 glass-panel max-w-sm w-full p-6 m-4 shadow-2xl scale-95 transition-transform duration-300" id="modalContent">
+            <div class="flex flex-col items-center text-center">
+                <div class="w-16 h-16 bg-rose-100 rounded-full flex items-center justify-center text-rose-600 mb-4 animate-pulse">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                </div>
+                <h3 class="text-lg font-black text-slate-800 uppercase tracking-tight mb-2">Atención: Datos Incompletos</h3>
+                <p class="text-xs text-slate-600 font-medium mb-6 leading-relaxed">Hay campos que son obligatorios. Se deben suministrar los datos faltantes para continuar con la radicación.</p>
+                <button type="button" onclick="closeModal()" class="w-full py-3 bg-slate-800 text-white rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-slate-900 shadow-lg transition-all active:scale-95">Entendido</button>
+            </div>
+        </div>
+    </div>
 
     <script src="assets/js/radicador.js"></script>
 </body>

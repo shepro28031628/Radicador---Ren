@@ -1,6 +1,6 @@
 # 🚀 Renapp Radicador Digital - Portal Premium
 
-![Version](https://img.shields.io/badge/version-2.1.2-blue.svg)
+![Version](https://img.shields.io/badge/version-2.2.0-blue.svg)
 ![PHP](https://img.shields.io/badge/PHP-8.x-777bb4.svg)
 ![Tailwind](https://img.shields.io/badge/Tailwind-CSS-38b2ac.svg)
 
@@ -8,14 +8,15 @@ Bienvenido al **Radicador Digital de Renapp**, una solución moderna y profesion
 
 ## ✨ Características Principales
 
-- **💎 Diseño Premium**: Interfaz basada en *Glassmorphism* con tipografía Outfit y paleta de colores institucional.
-- **🖥️ Optimización Anti-Scroll**: Layout de rejilla compacta (5 columnas para pacientes) que minimiza el desplazamiento vertical.
+- **💎 Diseño Premium**: Interfaz basada en *Glassmorphism* con efecto de cristal y tipografía corporativa.
+- **🖥️ Optimización Anti-Scroll**: Layout de rejilla compacta que minimiza el desplazamiento vertical.
 - **🛡️ Seguridad Proactiva**: 
   - **Validación de Archivos**: Restricción estricta por tipo (`PDF, JPG, PNG, XLSX, ZIP`) y tamaño máximo de **10MB**.
-  - **Integridad de Datos**: Bloqueo de fechas pasadas y validación de campos obligatorios sincronizada.
+  - **Modal de Alerta**: Sistema de advertencia intrínseca para campos obligatorios faltantes.
+- **🔍 Integración Renapp (Simulada)**: Búsqueda instantánea de afiliados por Número de Identificación con auto-completado de ficha médica y administrativa.
 - **📑 Carga Dual Híbrida**:
-  - **Individual**: Carga de 6 documentos específicos con feedback visual inmediato.
-  - **Masiva**: Sistema de carga por lotes para Afiliados, Servicios y Documentación masiva.
+  - **Individual**: Carga de 10 categorías específicas (HC, Furel, Paraclínicos, etc.) con indicador de búsqueda y éxito.
+  - **Masiva (3 Pasos)**: Flujo guiado: 1. Afiliados (Excel), 2. Servicios (Excel), 3. Registro y ZIP de Documentos.
 - **🏗️ Arquitectura Modular**: Código documentado bajo estándares PHPDoc/JSDoc y separación estricta de capas (MVC simplificado).
 
 ## 🛠️ Stack Tecnológico

@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initDateDisplay();
     initFileUploads();
     initFormValidation();
+    initAfiliadoLookup();
 });
 
 /**
@@ -115,6 +116,23 @@ function validateForm() {
     if (!check || !btn) return;
 
     const isActive = check.checked;
+
+    if (isActive) {
+        // Verificar campos obligatorios antes de permitir activar el check
+        const mandatoryFields = ['tipoSolicitud', 'nombreRadicador', 'cedula', 'nombres', 'apellidos', 'celular', 'email', 'eps', 'arl', 'afp'];
+        let missing = false;
+        mandatoryFields.forEach(id => {
+            const el = document.getElementById(id);
+            if (el && !el.value) missing = true;
+        });
+
+        if (missing) {
+            check.checked = false;
+            showMandatoryModal();
+            return;
+        }
+    }
+
     btn.disabled = !isActive;
     btn.classList.toggle('opacity-50', !isActive);
     btn.classList.toggle('cursor-not-allowed', !isActive);
@@ -130,6 +148,32 @@ function validateForm() {
     if (icon) {
         icon.classList.toggle('scale-0', !isActive);
         icon.classList.toggle('scale-100', isActive);
+    }
+}
+
+/**
+ * Funciones para el manejo del Modal de Alerta
+ */
+function showMandatoryModal() {
+    const modal = document.getElementById('mandatoryModal');
+    const content = document.getElementById('modalContent');
+    if (modal) {
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            modal.classList.add('opacity-100');
+            if (content) content.classList.remove('scale-95');
+            if (content) content.classList.add('scale-100');
+        }, 10);
+    }
+}
+
+function closeModal() {
+    const modal = document.getElementById('mandatoryModal');
+    const content = document.getElementById('modalContent');
+    if (modal) {
+        modal.classList.remove('opacity-100');
+        if (content) content.classList.add('scale-95');
+        setTimeout(() => modal.classList.add('hidden'), 300);
     }
 }
 
@@ -158,59 +202,125 @@ function initFormValidation() {
 }
 
 /**
- * Genera una plantilla de Excel dinámica con validaciones de datos
- * @async
+ * Genera una plantilla de Excel dinámica con validaciones de datos (PASO 1)
  */
 async function generateExcelTemplate() {
     const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet('Plantilla Renapp');
+    const worksheet = workbook.addWorksheet('Plantilla Afiliados');
 
     const headers = [
         'Tipo_de_documento', 'Número_de_documento', 'Nombres', 'Apellidos', 
         'Fecha_de_Nacimiento', 'Sexo', 'Estado_Civil', 'Nivel_Escolar', 
         'Departamento', 'Municipio', 'Tipo_Dirección', 'Dirección', 
-        'Teléfono', 'Celular', 'Correo_electrónico', 'IBC', 
-        'Tipo_de_Afiliado', 'EPS', 'Regional', 'AFP', 'ARL'
+        'Teléfono', 'Celular', 'Correo_electrónico', 'EPS', 'Regional', 'AFP', 'ARL'
     ];
 
     const headerRow = worksheet.addRow(headers);
-    headerRow.font = { bold: true, color: { argb: 'FFFFFFFF' }, size: 11 };
-    headerRow.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF10B981' } }; // Color Esmeralda para Afiliados
+    headerRow.font = { bold: true, color: { argb: 'FFFFFFFF' }, size: 10 };
+    headerRow.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF10B981' } };
     headerRow.alignment = { vertical: 'middle', horizontal: 'center' };
-    headerRow.height = 25;
 
-    // Configuración de listas desplegables vía hoja oculta
+    // Configuración de listas desplegables
     const configSheet = workbook.addWorksheet('Config', { state: 'hidden' });
     const options = {
         doc: ['CC', 'CE', 'TI', 'RC', 'PT'],
         sexo: ['Masculino', 'Femenino', 'Otro'],
-        estado: ['Soltero/a', 'Casado/a', 'Divorciado/a', 'Viudo/a', 'Unión Libre'],
-        afiliado: ['Cotizante', 'Beneficiario']
+        estado: ['Soltero/a', 'Casado/a', 'Divorciado/a', 'Viudo/a', 'Unión Libre']
     };
 
     options.doc.forEach((opt, i) => configSheet.getCell(`A${i + 1}`).value = opt);
     options.sexo.forEach((opt, i) => configSheet.getCell(`B${i + 1}`).value = opt);
     options.estado.forEach((opt, i) => configSheet.getCell(`C${i + 1}`).value = opt);
-    options.afiliado.forEach((opt, i) => configSheet.getCell(`D${i + 1}`).value = opt);
 
-    // Aplicar validación a las primeras 500 filas para guiar al usuario
-    for (let i = 2; i <= 500; i++) {
+    for (let i = 2; i <= 300; i++) {
         worksheet.getCell(`A${i}`).dataValidation = { type: 'list', allowBlank: true, formulae: [`Config!$A$1:$A$${options.doc.length}`] };
         worksheet.getCell(`F${i}`).dataValidation = { type: 'list', allowBlank: true, formulae: [`Config!$B$1:$B$${options.sexo.length}`] };
         worksheet.getCell(`G${i}`).dataValidation = { type: 'list', allowBlank: true, formulae: [`Config!$C$1:$C$${options.estado.length}`] };
-        worksheet.getCell(`Q${i}`).dataValidation = { type: 'list', allowBlank: true, formulae: [`Config!$D$1:$D$${options.afiliado.length}`] };
     }
 
-    // Auto-ajuste de ancho de columnas para legibilidad
-    worksheet.columns.forEach(col => { col.width = 25; });
+    worksheet.columns.forEach(col => { col.width = 18; });
 
-    // Generación del archivo y descarga automática
     const buffer = await workbook.xlsx.writeBuffer();
+    saveExcel(buffer, 'Plantilla_Masiva_Afiliados.xlsx');
+}
+
+/**
+ * Genera la plantilla para Carga de Servicios (PASO 2)
+ */
+async function generateServicesTemplate() {
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Plantilla Servicios');
+
+    const headers = ['Tipo_de_documento', 'Número_de_documento', 'servicios', 'usuarios'];
+    const headerRow = worksheet.addRow(headers);
+    headerRow.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+    headerRow.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF59E0B' } }; // Amber
+
+    worksheet.columns.forEach(col => { col.width = 22; });
+
+    const buffer = await workbook.xlsx.writeBuffer();
+    saveExcel(buffer, 'Plantilla_Carga_Servicios.xlsx');
+}
+
+function saveExcel(buffer, filename) {
     const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.download = 'Plantilla_Radicacion_Masiva.xlsx';
+    link.download = filename;
     link.click();
+}
+
+/**
+ * Simulación de Búsqueda de Afiliados por Número de Identificación
+ */
+function initAfiliadoLookup() {
+    const cedulaInput = document.getElementById('cedula');
+    const searchIcon = document.getElementById('searchIcon');
+    const loadingIcon = document.getElementById('loadingIcon');
     
-    console.log('✅ Plantilla Excel generada exitosamente.');
+    if (!cedulaInput) return;
+
+    cedulaInput.addEventListener('input', async () => {
+        const val = cedulaInput.value.trim();
+        if (val !== '12345') {
+            // Limpiar estilos si no coincide
+            cedulaInput.classList.remove('border-emerald-500', 'bg-emerald-50/30');
+            return;
+        }
+
+        // Activar estado de carga
+        if (searchIcon) searchIcon.classList.add('hidden');
+        if (loadingIcon) loadingIcon.classList.remove('hidden');
+
+        // Simulación de latencia de red
+        await new Promise(resolve => setTimeout(resolve, 600));
+
+        // Re-validar por si el usuario borró mientras cargaba
+        if (cedulaInput.value.trim() === '12345') {
+            document.getElementById('nombres').value = "JUAN CARLOS";
+            document.getElementById('apellidos').value = "PEREZ RODRIGUEZ";
+            document.getElementById('sexo').value = "Masculino";
+            document.getElementById('estadoCivil').value = "Casado/a";
+            document.getElementById('celular').value = "3001234567";
+            document.getElementById('email').value = "juan.perez@renapp.com";
+            document.getElementById('eps').value = "NUEVA EPS";
+            document.getElementById('arl').value = "SURA ARL";
+            document.getElementById('afp').value = "PORVENIR";
+            
+            cedulaInput.classList.add('border-emerald-500', 'bg-emerald-50/30');
+            console.log('✅ Afiliado recuperado instantáneamente.');
+        }
+
+        // Desactivar estado de carga
+        if (searchIcon) searchIcon.classList.remove('hidden');
+        if (loadingIcon) loadingIcon.classList.add('hidden');
+    });
+
+    // Marcar campos como "encontrados" para saber cuáles limpiar
+    ['nombres', 'apellidos', 'celular', 'email', 'eps', 'arl', 'afp'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.addEventListener('input', () => delete el.dataset.found);
+        }
+    });
 }

@@ -30,10 +30,10 @@ Sistema centralizado para la gestión de solicitudes de radicación médica y ad
        ║ del Paciente  ║   ║ Plantilla XLSX║
        ╚═══════╦═══════╝   ╚═══════╦═══════╝
                ║                   ║
-       ╔═══════▼═══════╗   ╔═══════▼═══════╗
-       ║ Cargar Docs   ║   ║ Cargar XLSX   ║
-       ║ (6 Categorías)║   ║ + ZIP Docs    ║
-       ╚═══════╦═══════╝   ╚═══════╦═══════╝
+        ╔═══════▼═══════╗   ╔═══════▼═══════╗
+        ║ Cargar Docs   ║   ║ PASO 1, 2, 3  ║
+        ║ (10 Categorías)║   ║ Flujo Masivo  ║
+        ╚═══════╦═══════╝   ╚═══════╦═══════╝
                ║                   ║
                ╚═══════╦═══════════╝
                        ║
@@ -61,10 +61,13 @@ Sistema centralizado para la gestión de solicitudes de radicación médica y ad
 2.  **Seguridad de Archivos (Frontend):**
     *   **Formatos Permitidos:** `.pdf, .jpg, .jpeg, .png, .xlsx, .zip`.
     *   **Límite de Tamaño:** Máximo **10MB** por archivo para evitar saturación del servidor.
-3.  **Feedback Dinámico:** Sistema de alertas en `radicador.php` que distingue visualmente entre Éxito (Emerald) y Error (Rose) mediante la variable `$response`.
-4.  **UX Anti-Scroll:** Organización en rejillas compactas (5 columnas para paciente) para minimizar el desplazamiento.
+3.  **Feedback Dinámico:** 
+    *   **Buscador ID:** Indicador visual (spinner) durante la recuperación de datos desde Renapp.
+    *   **Alertas:** Sistema de alertas en `radicador.php` para el backend.
+    *   **Modal de Seguridad:** Bloqueo de radicación mediante Modal si existen campos obligatorios vacíos.
+4.  **UX Anti-Scroll:** Organización en rejillas compactas para minimizar el desplazamiento.
 5.  **Mimetismo de Código:** Se mantiene el estilo de comentarios y estructura original del proyecto para estabilidad total.
-6.  **Optimización de Carga:** Solo la categoría "Anexos" permite múltiples archivos para evitar saturación de almacenamiento innecesaria.
+6.  **Optimización de Carga:** Se implementan 10 categorías de carga individual para asegurar la trazabilidad de cada documento.
 
 ## Mantenimiento
 - **Campos del Paciente:** Editar la rejilla `lg:grid-cols-5` en `radicador.php`.
